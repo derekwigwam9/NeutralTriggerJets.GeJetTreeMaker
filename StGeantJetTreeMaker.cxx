@@ -124,6 +124,7 @@ void StGeantJetTreeMaker::Make() {
   // event loop
   Long64_t nGam   = 0;
   Long64_t nPi0   = 0;
+  Long64_t nHad   = 0;
   Long64_t nBytes = 0;
   for (Long64_t iEvt = 0; iEvt < nEvts; iEvt++) {
 
@@ -188,6 +189,7 @@ void StGeantJetTreeMaker::Make() {
     // trigger cuts
     const Bool_t isPi0 = IsPi0(idTrg);
     const Bool_t isGam = IsGamma(idTrg);
+    const Bool_t isHad = IsHadron(idTrg);
     if (!isGoodTrg) continue;
 
 
@@ -203,6 +205,12 @@ void StGeantJetTreeMaker::Make() {
       _hEvtQA[2][1] -> Fill(nTrks);
       _hEvtQA[3][1] -> Fill(eTrg);
       nGam++;
+    }
+    if (isHad) {
+      _hEvtQA[1][2] -> Fill(idTrg);
+      _hEvtQA[2][2] -> Fill(nTrks);
+      _hEvtQA[3][2] -> Fill(eTrg);
+      nHad++;
     }
 
 
@@ -248,6 +256,12 @@ void StGeantJetTreeMaker::Make() {
           _hTrkQA[2][1] -> Fill(hTrk);
           _hTrkQA[3][1] -> Fill(eTrk);
         }
+        if (isHad) {
+          _hTrkQA[0][2] -> Fill(pTtrk);
+          _hTrkQA[1][2] -> Fill(dFtrk);
+          _hTrkQA[2][2] -> Fill(hTrk);
+          _hTrkQA[3][2] -> Fill(eTrk);
+        }
         particles.push_back(PseudoJet(pXtrk, pYtrk, pZtrk, eTrk));
       }
       else {
@@ -257,11 +271,17 @@ void StGeantJetTreeMaker::Make() {
           _hTwrQA[2][0] -> Fill(hTrk);
           _hTwrQA[3][0] -> Fill(eTrk);
         }
-        if (isGam && !isCharged) {
+        if (isGam) {
           _hTwrQA[0][1] -> Fill(pTtrk);
           _hTwrQA[1][1] -> Fill(dFtrk);
           _hTwrQA[2][1] -> Fill(hTrk);
           _hTwrQA[3][1] -> Fill(eTrk);
+        }
+        if (isHad) {
+          _hTwrQA[0][2] -> Fill(pTtrk);
+          _hTwrQA[1][2] -> Fill(dFtrk);
+          _hTwrQA[2][2] -> Fill(hTrk);
+          _hTwrQA[3][2] -> Fill(eTrk);
         }
         if (_jetType == 1)
           particles.push_back(PseudoJet(pXtrk, pYtrk, pZtrk, eTrk));
@@ -363,6 +383,12 @@ void StGeantJetTreeMaker::Make() {
         _hJetQA[2][1] -> Fill(hJet);
         _hJetQA[3][1] -> Fill(eJet);
       }
+      if (isHad) {
+        _hJetQA[0][2] -> Fill(pTjet);
+        _hJetQA[1][2] -> Fill(dFjet);
+        _hJetQA[2][2] -> Fill(hJet);
+        _hJetQA[3][2] -> Fill(eJet);
+      }
       _JetIndex.push_back(iJet);
       _JetNCons.push_back(nCst);
       _JetPt.push_back(pTjet);
@@ -381,17 +407,24 @@ void StGeantJetTreeMaker::Make() {
   // record no. of triggers
   _hEvtQA[0][0] -> Fill(nPi0);
   _hEvtQA[0][1] -> Fill(nGam);
+  _hEvtQA[0][2] -> Fill(nHad);
   PrintInfo(13);
 
 
   // normalize histograms
   for (UInt_t iTrg = 0; iTrg < NTrgTypes; iTrg++) {
     Double_t nTrg;
-    if (iTrg == 0)
-      nTrg = (Double_t) nPi0;
-    else
-      nTrg = (Double_t) nGam;
-
+    switch (iTrg) {
+      case 0:
+        nTrg = (Double_t) nPi0;
+        break;
+      case 1:
+        nTrg = (Double_t) nGam;
+        break;
+      case 2:
+        nTrg = (Double_t) nHad;
+        break;
+    }
     for (UInt_t iHist = 0; iHist < NHistQA; iHist++) {
       const Double_t trkBin   = _hTrkQA[iHist][iTrg] -> GetBinWidth(17);
       const Double_t twrBin   = _hTwrQA[iHist][iTrg] -> GetBinWidth(17);
@@ -417,14 +450,22 @@ void StGeantJetTreeMaker::Finish() {
   TDirectory *dHists = _fOutput -> mkdir("QA");
   TDirectory *dPi0QA = dHists   -> mkdir("Pi0");
   TDirectory *dGamQA = dHists   -> mkdir("Gamma");
+  TDirectory *dHadQA = dHists   -> mkdir("Hadron");
   PrintInfo(15);
 
   for (UInt_t iTrg = 0; iTrg < NTrgTypes; iTrg++) {
     for (UInt_t iHist = 0; iHist < NHistQA; iHist++) {
-      if (iTrg == 0)
-        dPi0QA -> cd();
-      else
-        dGamQA -> cd();
+      switch (iTrg) {
+        case 0:
+          dPi0QA -> cd();
+          break;
+        case 1:
+          dGamQA -> cd();
+          break;
+        case 2:
+          dHadQA -> cd();
+          break;
+      }
       _hEvtQA[iHist][iTrg] -> Write();
       _hTrkQA[iHist][iTrg] -> Write();
       _hTwrQA[iHist][iTrg] -> Write();

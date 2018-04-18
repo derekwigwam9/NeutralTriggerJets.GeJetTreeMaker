@@ -27,7 +27,8 @@ using namespace std;
 
 // global constants
 static const UInt_t   NHistQA    = 4;
-static const UInt_t   NTrgTypes  = 2;
+static const UInt_t   NTrgTypes  = 3;
+static const UInt_t   NHadIds    = 18;
 static const UInt_t   IdPi0      = 7;
 static const UInt_t   IdGamma    = 1;
 static const UInt_t   NBadRun    = 45;
@@ -396,6 +397,7 @@ class StGeantJetTreeMaker {
     Bool_t   IsGoodTrack(const Double_t etaTrk, const Double_t pTtrk);
     Bool_t   IsPi0(const UInt_t idGnt);
     Bool_t   IsGamma(const UInt_t idGnt);
+    Bool_t   IsHadron(const UInt_t idGnt);
     Long64_t LoadTree(const Long64_t entry);
     Long64_t GetEntry(const Long64_t entry);
 
