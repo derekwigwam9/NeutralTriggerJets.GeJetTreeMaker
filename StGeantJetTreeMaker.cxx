@@ -25,10 +25,11 @@ ClassImp(StGeantJetTreeMaker);
 
 
 
-void StGeantJetTreeMaker::SetInputAndOutputFiles(const TString& sInput, const TString& sOutput) {
+void StGeantJetTreeMaker::SetInputAndOutputFiles(const TString& sInput, const TString& sOutput, const Double_t pTparton) {
 
-  _sInput  = sInput;
-  _sOutput = sOutput;
+  _sInput     = sInput;
+  _sOutput    = sOutput;
+  _PartonicPt = pTparton;
   PrintInfo(1);
 
 }  // end 'SetInputAndOutput(TString&, TString&)'

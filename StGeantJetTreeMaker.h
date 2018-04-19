@@ -87,6 +87,7 @@ class StGeantJetTreeMaker {
     Int_t    _NJets;
     Int_t    _RunId;
     Double_t _Refmult;
+    Double_t _PartonicPt;
     Double_t _TSP;
     Double_t _TrgEta;
     Double_t _TrgPhi;
@@ -409,7 +410,7 @@ class StGeantJetTreeMaker {
     virtual ~StGeantJetTreeMaker();
 
     // public methods
-    void SetInputAndOutputFiles(const TString& sInput, const TString& sOuput);
+    void SetInputAndOutputFiles(const TString& sInput, const TString& sOuput, const Double_t pTparton=0.);
     void SetEventParameters(const Double_t rVtxMax, const Double_t zVtxMax);
     void SetTriggerParameters(const Double_t etaTrgMax, const Double_t eTtrgMin, const Double_t eTtrgMax);
     void SetTrackParameters(const Double_t etaTrkMax, const Double_t pTtrkMin, const Double_t pTtrkMax);

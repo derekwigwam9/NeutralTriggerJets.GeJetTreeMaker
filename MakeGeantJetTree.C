@@ -19,13 +19,14 @@ class StGeantJetTreeMaker;
 
 
 // i/o parameters
-static const TString sInput("../../MuDstMatching/output/merged/pt35_-1.ePcalc2.root");
-static const TString sOuput("pp200r12pt35g.r03a02rm1full.d11m12y2017.root");
+static const TString  sInput("../../MuDstMatching/output/merged/pt35rff.matchWithMc.root");
+static const TString  sOuput("pp200r12pt5g.r04rm1full.d6m1y2018.root");
+static const Double_t pTparton(5);
 // jet parameters
-static const UInt_t   type(1);
+static const UInt_t   type(0);
 static const UInt_t   nRepeat(1);
 static const UInt_t   nRemove(1);
-static const Double_t rJet(0.3);
+static const Double_t rJet(0.4);
 static const Double_t aGhost(0.01);
 static const Double_t pTjetMin(0.2);
 static const Double_t etaGhostMax(1.0 + rJet);
@@ -53,7 +54,7 @@ void MakeGeantJetTree(const Bool_t isInBatchMode=false) {
 
   StGeantJetTreeMaker *gntJetMaker = new StGeantJetTreeMaker(isInBatchMode);
   // set parameters
-  gntJetMaker -> SetInputAndOutputFiles(sInput.Data(), sOuput.Data());
+  gntJetMaker -> SetInputAndOutputFiles(sInput.Data(), sOuput.Data(), pTparton);
   gntJetMaker -> SetEventParameters(rVtxMax, zVtxMax);
   gntJetMaker -> SetTriggerParameters(etaTrgMax, eTtrgMin, eTtrgMax);
   gntJetMaker -> SetTrackParameters(etaTrkMax, pTtrkMin, pTtrkMax);
